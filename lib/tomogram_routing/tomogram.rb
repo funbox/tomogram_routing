@@ -18,7 +18,7 @@ module TomogramRouting
     private
 
     def find_request_path(method:, path:)
-      return '' unless path && path.size.positive?
+      return '' unless path && path.size > 0
 
       path = remove_the_slash_at_the_end2(path)
 
