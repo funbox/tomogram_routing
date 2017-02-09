@@ -26,7 +26,7 @@ module TomogramRouting
       return action['path'] if action
 
       action = search_with_parameter(method, path, self)
-      return action['path'] if action&.first
+      return action['path'] if action && action.first
 
       ''
     end
