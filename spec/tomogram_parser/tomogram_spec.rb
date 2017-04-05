@@ -36,6 +36,14 @@ RSpec.describe TomogramRouting::Tomogram do
         end
       end
 
+      context 'if request with query parameters' do
+        let(:path) { '/status/?a=b&c=d' }
+
+        it 'ignores query parameters' do
+          expect(subject.find_request(method: method, path: path)).to eq(request1)
+        end
+      end
+
       context 'without parameters' do
         it 'return path' do
           expect(subject.find_request(method: method, path: path)).to eq(request1)
