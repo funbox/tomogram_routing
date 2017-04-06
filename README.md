@@ -12,16 +12,16 @@ require 'tomogram_routing'
 ```
 
 ## Using
-```
+```ruby
 tomogram = TomogramRouting::Tomogram.craft(tomogram.json)
 ```
 
 ### find_request
-```
+```ruby
 expect_request = tomogram.find_request(method:, path:)
 ```
 
 ### find_find_responses
-```
+```ruby
 expect_responses = expect_request.find_responses(status:)
 ```

@@ -9,8 +9,8 @@ module TomogramRouting
     end
 
     def find_request(method:, path:)
+      path = find_request_path(method: method, path: path)
       find do |doc|
-        path = find_request_path(method: method, path: path)
         doc['path'] == path && doc['method'] == method
       end
     end
@@ -20,7 +20,7 @@ module TomogramRouting
     def find_request_path(method:, path:)
       return '' unless path && path.size > 0
 
-      path = remove_the_slash_at_the_end2(path)
+      path = normalize_path(path)
 
       action = search_for_an_exact_match(method, path, self)
       return action['path'] if action
@@ -31,9 +31,18 @@ module TomogramRouting
       ''
     end
 
+    def normalize_path(path)
+      path = cut_off_query_params(path)
+      remove_the_slash_at_the_end2(path)
+    end
+
     def remove_the_slash_at_the_end2(path)
       return path[0..-2] if path[-1] == '/'
       path
+    end
+
+    def cut_off_query_params(path)
+      path.gsub(/\?.*\z/, '')
     end
 
     def search_for_an_exact_match(method, path, documentation)
