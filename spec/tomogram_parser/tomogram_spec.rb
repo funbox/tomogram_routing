@@ -18,10 +18,16 @@ RSpec.describe TomogramRouting::Tomogram do
 
     context 'if found in the tomogram' do
       let(:request1) { { 'path' => '/status', 'method' => 'POST' } }
-      let(:request2) { { 'path' => '/status/{id}', 'method' => 'DELETE' } }
+      let(:request2) { { 'path' => '/status/{id}/test/{tid}.json', 'method' => 'DELETE' } }
       let(:tomogram) do
         MultiJson.dump(
           [
+            # Should not find these
+            { 'path' => '/status', 'method' => 'GET' },
+            { 'path' => '/status/{id}/test/{tid}.json', 'method' => 'GET' },
+            { 'path' => '/status/{id}/test/{tid}.csv', 'method' => 'DELETE' },
+            { 'path' => '/status/{id}/test/', 'method' => 'DELETE' },
+            # Should find these
             request1,
             request2
           ]
@@ -32,22 +38,22 @@ RSpec.describe TomogramRouting::Tomogram do
         let(:path) { '/status/' }
 
         it 'return path withoud slash at the end' do
-          expect(subject.find_request(method: method, path: path)).to eq(request1)
+          expect(subject.find_request(method: method, path: path)).to include(request1)
         end
       end
 
       context 'without parameters' do
         it 'return path' do
-          expect(subject.find_request(method: method, path: path)).to eq(request1)
+          expect(subject.find_request(method: method, path: path)).to include(request1)
         end
       end
 
       context 'with a parameter' do
-        let(:path) { '/status/1' }
+        let(:path) { '/status/1/test/2.json' }
         let(:method) { 'DELETE' }
 
         it 'returns the modified path' do
-          expect(subject.find_request(method: method, path: path)).to eq(request2)
+          expect(subject.find_request(method: method, path: path)).to include(request2)
         end
       end
     end
@@ -69,7 +75,7 @@ RSpec.describe TomogramRouting::Tomogram do
       let(:method) { 'GET' }
 
       it 'returns the modified path' do
-        expect(subject.find_request(method: method, path: path)).to eq(request3)
+        expect(subject.find_request(method: method, path: path)).to include(request3)
       end
     end
   end
